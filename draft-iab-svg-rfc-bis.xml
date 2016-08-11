@@ -1,0 +1,2626 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+  <!ENTITY rfc2119 PUBLIC '' 
+    'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml'>
+]>
+
+<rfc category="info" ipr="trust200902"
+  docName="draft-iab-svg-rfc-02">
+
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+
+<?rfc iprnotified="no" ?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="4"?>
+<?rfc symrefs="yes" ?>
+<?rfc sortrefs="no" ?>
+
+<front>
+  <title>SVG Drawings for RFCs: SVG 1.2 RFC</title>
+
+  <author initials="N." surname="Brownlee" fullname="Nevil Brownlee">
+    <organization>The University of Auckland</organization>
+    <address><email>n.brownlee@auckland.ac.nz</email></address>
+  </author>
+  <author  surname="IAB" fullname="Internet Architecture Board">
+    <organization></organization>
+    <address><email>iab@iab.org</email>
+    </address>
+  </author>
+
+  <date day="26" month="February" year="2016" />
+
+  <keyword>RFC</keyword>
+  <abstract>
+    <t>.  Maybe the text in section
+      This document specifies SVG 1.2 RFC - an SVG profile for use in diagrams
+      that may appear in RFCs - and considers some of the issues
+      concerning the creation and use of such diagrams.
+    </t>
+  </abstract>
+</front>
+
+<middle>
+  <section title="Introduction">
+    <t>
+      Over the last few years the RFC Editor has worked with the
+      Internet community to develop specifications for changes in
+      the format of RFCs.  An outline of the resulting
+      specifications was published as <xref target="RFC6949"/> in May 2013.
+      Since then a Design Team has been working with the RFC Editor
+      to flesh out those specifications.
+      One aspect of the changes is to allow line drawings in RFCs;
+      <xref target="RFC6949"/> says
+        <list style="empty"><t>
+        "Graphics may include ASCII art and a more complex form to be
+         defined, such as SVG line art [SVG].  Color and grayscale will
+         not be accepted.  RFCs must correctly display in monochromatic
+         black-and-white to allow for monochrome displays,
+         black-and-white printing, and support for visual disabilities."
+    </t></list>
+    </t><t>
+      SVG (Scalable Vector Graphics) has been developed by W3C, the
+      World Wide Web Consortium; its current standard is SVG 1.1 Full
+      <xref target="W3C.REC-SVG11-20110816"/>.
+      This document defines SVG 1.2 RFC, an SVG profile (i.e. a subset
+      of SVG) that is suitable for RFC line drawings.
+    </t><t>
+      Note that in RFCs, the text provides normative
+      descriptions of protocols, systems, etc.  Diagrams may be
+      used to help explain concepts more clearly, but
+      they provide supporting detail, and should not be considered
+      to be complete specifications in themselves.
+      <!--  they are informative, not normative. -->
+    </t><t>  
+      The details (particularly any vocabularies) described in this
+      document are expected to change based on experience gained in
+      implementing the RFC production center's toolset. Revised
+      documents will be published capturing those changes as the
+      toolset is completed. Other implementors must not expect those
+      changes to remain backwards-compatible with the details
+      described in this document.
+    </t>
+  </section>
+
+  <section title="SVG 1.2 RFC: An SVG profile for RFCs">
+    <t>
+      As a starting point for SVG 1.2 RFC, the Design Team decided to
+      use SVG 1.2 Tiny <xref target="W3C.REC-SVGTiny12-20081222"/>.
+      SVG 1.2 Tiny is an SVG subset intended to be implemented on
+      small, mobile devices such as cellphones and smartphones.
+      That should allow RFCs to be rendered well on such devices,
+      especially those that have small screens.  However, RFCs are
+      self-contained documents that do not change once they are
+      published.  The use of SVG drawings in RFCs is intended to allow
+      authors to create drawings that are simple to produce, and
+      easier to understand than our traditional 'ASCII Art' ones.
+      In short, we are also trying to improve access to the content in
+      RFCs, so SVG drawings need to be kept as simple as possible.
+    </t><t>
+      Appendix A (below) provides a complete RELAX NG Compact (rnc) schema
+      for SVG 1.2 RFC.  It is derived from the SVG 1.2 schema, and is
+      the formal definition of SVG 1.2 RFC.  The remainder of this section
+      gives a simplified - i.e. easier to read and dunderstand -
+      overview of SVG 1.2 RFC.
+    </t><t>
+      SVG can provide a complete User Interface, but within RFCs, all
+      we need are simple diagrams that do not change once the RFC is
+      published.  Therefore, SVG RFC does not allow anything from the
+      following sections in SVG Tiny 1.2
+      <xref target="W3C.REC-SVGTiny12-20081222"/>:
+<?rfc subcompact="yes" ?>
+      <list style='hanging'>
+        <t hangText="12  Multimedia"></t>
+        <t hangText="13  Interactivity"></t>
+        <t hangText="15  Scripting"></t>
+        <t hangText="16  Animation"></t>
+        <t hangText="18  Metadata"></t>
+        <t hangText="19  Extensibility"></t>
+      </list>
+      Note that SVG Tiny 1.2 elements may have many properties or
+      attributes that are needed to support aspects of the above sections.
+      Those are not allowed in SVG 1.2 RFC.
+    </t><t>
+    Considering the other sections in SVG Tiny 1.2
+      <xref target="W3C.REC-SVGTiny12-20081222"/>:
+      <list style='hanging' hangIndent='5'>
+        <t hangText=" 9 Basic Shapes"></t>
+        <t hangText="10 Text"><vspace />
+          Everything in these sections is allowed in SVG 1.2 RFC.
+        </t>
+<?rfc subcompact="no" ?>
+        <t hangText="11 Painting: Filling, Stroking, Colors and Paint Servers">
+          <vspace />
+          Anything relating to 'color' is not allowed in SVG 1.2 RFC,
+          everything else is allowed.  This is a requirement documented
+          in <xref target="RFC6949"/>.
+        </t>
+        <t hangText="14 Linking"><vspace />
+          SVG Tiny 1.2 allows internationalized IRIs in references.
+          In SVG 1.2 RFC such links must be ASCII only. That should
+          not cause problems, since one can just use the URI form of
+          any IRI.  Authors should try to use links only to URIs
+          that are long-term stable.<vspace />
+        </t>
+        <t hangText="17 Fonts"><vspace />
+         SVG 1.2 RFC only allows 'serif', 'sans-serif' and 'monospace'
+         generic font families from the WebFonts facility, described
+         in CSS 2.1, <xref target= "W3C.REC-CSS2-20110607"/>,
+          section 15,
+         Fonts. In particular, the SVG 'font' element is not allowed.
+        </t>
+      </list>
+    </t>
+
+  <section title="Elements, properties and attributes allowed in SVG 1.2 RFC">
+    <t> Elements, properties and attributes selected for SVG 1.2 RFC
+      from <xref target="W3C.REC-SVGTiny12-20081222"/>.
+<figure><artwork><![CDATA[
+ In the list below, elements and properties are listed on the
+ left,and their allowed values are given in parentheses on the
+ right.
+ 
+ <color> is the list of allowed colors, a black-and-white
+         subset of the SVG color names.
+ 
+ <style> is a set of CSS attributes that are commonly used (by SVG
+         drawing applications).  They are not part of SVG Tiny 1.2,
+         but are included here for compatibility.  Note that
+         - There is no guarantee that any renderer will implement
+           all the CSS attributes a drawing application may use.
+         - Authors will need to consider the compatibility of their
+           drawings with rendering devices.
+
+ Elements:
+
+   svg              (version=1.2, baseProfile=tiny, width, viewBox,
+                     preserveAspectRatio, snapshotTime, height,
+                     id, role)
+   g                (label, class, id, role, fill, <style>, transform)
+   defs             (id, role, fill)
+   title            (id, role)
+   desc             (id, role)
+   a                (id, role, fill, transform)
+   use              (x, y, href, xlink:href, id, role, fill, transform)
+
+   rect             (x, y, width, height, rx, ry, stroke-miterlimit
+                     id, role, fill, <style>, transform)
+   circle           (cx, cy, r,
+                     id, role, fill, <style>, transform)
+   ellipse          (cx, cy, rx, ry,
+                     id, role, fill, <style>, transform)
+   line             (x1, y1, x2, y2,  id, role, fill, transform)
+   polyline         (points, id, role, fill, transform)
+   polygon          (points, id, role, fill, <style>, transform)
+   text             (x, y, rotate, space, id, role, fill, <style>,
+                     transform)
+   tspan            (x, y, id, role, fill)
+   textArea         (x, y, width, height, auto, id, role, fill,
+                     transform)
+   tbreak           (id, role)
+
+   solidColor       (id, role, fill)
+   linearGradient   (gradientUnits, x1, y1, x2, y2, id, role, fill)
+   radialGradient   (gradientUnits, cx, cy, r, id, role, fill)
+   stop             (id, role, fill)
+   path             (d, pathLength, stroke-miterlimit,
+                     id, role, fill, <style>, transform)
+  
+ Properties:  (most allow inherit as a value)
+
+   <style>          (font-family, font-weight, font-style,
+   font-variant, direction, unicode-bidi,
+                     text-anchor, fill, fill-rule)
+   
+   <color>          (black, white, #000000, #ffffff, #FFFFFF)
+
+   stroke           (<color>, none, currentColor)
+   stroke-width 
+   stroke-linecap   (butt, round, square)
+   stroke-linejoin  (miter, round, bevel)
+   stroke-mitrelimit
+   stroke-dasharray
+   stroke-dashoffset
+   stroke-opacity
+   vector-effect    (non-scaling-stroke, none)
+   viewport-fill    (none, currentColor)
+   viewport-fill-opacity
+
+   display          (inline, block, list-item, run-in, compact,
+                      marker, table, inline-table, table-row-group,
+                      table-header-group, table-footer-group,
+                      table-row, table-column-group,
+                      table-column, table-cell, table-caption,
+                      none)
+   visibility       (visible, hidden, collapse)
+   color-rendering  (auto, optimizeSpeed, optimizeQuality)
+   shape-rendering  (auto, optimizeSpeed, crispEdges,
+                      geometricPrecision)
+   text-rendering   (auto, optimizeSpeed, optimizeLegibility,
+                      geometricPrecision)
+   buffered-rendering  (auto, dynamic, static)
+
+   opacity
+   solid-opacity
+   solid-color    (currentColor, <color>)
+   color          (currentColor, <color>)
+   stop-color     (currentColor, <color>)
+   stop-opacity
+
+   line-increment (auto)
+   text-align     (start,end, center)
+   display-align  (auto, before, center, after)
+
+   font-size
+   font-family    (serif, sans-serif, monospace)
+   font-weight    (normal, bold, bolder, lighter)
+   font-style     (normal, italic, oblique)
+   font-variant   (normal, small-caps)
+   direction      (ltr, rtl)
+   unicode-bidi   (normal, embed, bidi-override)
+   text-anchor    (start, middle, end)
+   fill           (none, <color>)
+   fill-rule      (nonzero, evenodd)
+   fill-opacity
+
+   
+]]></artwork></figure>
+</t>
+    </section>
+  </section>
+
+  <section title="How to create SVG drawings">
+    <t>Many drawing packages can be used to create SVG drawings,
+      for example Open Source packages Inkscape and Dia.
+      Be aware that such packages may use SVG elements or attributes
+      that are not allowed in SVG 1.2 RFC. 
+      <list style="symbols"> 
+      <t>For example, the 'marker' attribute is often used to place
+        symbols such as arrowheads on lines, but 'marker' is not allowed
+        in SVG 1.2 Tiny or SVG 1.2 RFC.  In such cases one has to draw
+        the arrowhead in another, simpler way.</t>
+      <t>SVG clip paths are used to define a shape; objects outside
+        that shape become invisible.  The 'clipPath' element is not
+        allowed in SVG 1.2 Tiny or SVG 1.2 RFC.</t>
+      </list>
+    </t><t>
+      Diagrams produced with these packages may contain elements,
+      their attributes or properties, or values of attributes or
+      properties that are not allowed in SVG 1.2 RFC.
+      We will need to provide a tool to strip out anything that is not
+      allowed in SVG 1.2 RFC, or to replace disallowed values,
+      e.g., 'sans-serif' for 'Sans' as values for 'font-family'.
+      Experience with a simple test version of a tool for this has shown
+      that such deletion and replacement can be effective for
+      making SVG files from drawing packages conform to SVG 1.2 RFC,
+      without visibly changing the diagrams they produce.
+    </t><t>
+      The tool described above can also be used by Authors simply
+      to check that their diagrams conform to SVG 1.2 RFC.  To help
+      with this, if visible changes do occur, the tool should 
+      produce a list of non-allowed keywords and the context in which
+      they were found.
+    </t><t>
+      To include a diagram into an RFC, the xml2rfc (v3) tool will
+      need to provide a way to include SVG drawings in Internet
+      Drafts, as described in <xref target='XML2RFCv3' /> sections
+      2.5 and 2.67.
+    </t>
+  </section>
+
+  <section title="Accessibility Considerations">
+    <t>One of the long-term goals for RFCs is to make them more
+      accessible, e.g. to sight-impaired readers.  For diagrams,
+      it would be useful for authors to provide alternative forms
+      of the diagram, so that voice-reading software could be used
+      to 'talk through' the diagram.  Simply reading the SVG code
+      for a complex diagram seems unlikely to work.
+    </t><t>
+      SVG 1.2 RFC allows SVG's 'title' and 'desc' elements.
+      'title' provides a brief text caption for an SVG object
+      (much like a figure caption), and 'desc' provides a longer
+      text description of what the object actually represents.
+      As well, the SVG 'role' attribute can be used to indicate
+      to a browser how an SVG object is to be interpreted.
+      Good suggestions on how to use these elements are given in
+      <xref target='SVG-ACCESS-TIPS' />.
+    </t><t>
+      ARIA is a W3C Recommendation for using SVG to create 
+      'Accessible Rich Internet Applications.'  A helpful introduction
+      to ARIA is provided by <xref target='SVG-ARIA-PRIMER' />,
+      while <xref target='SVG-USING-ARIA' /> gives examples of how
+      to use ARIA to enhance SVG accessibility.
+    </t>
+  </section>
+
+  <section title="Examples of diagrams common in RFCs">
+    <t>
+      Another way to create SVG drawings is to write programs to draw
+      them.  For example, using python and its svgwrite module is
+      a pleasant environment (for those who like writing code);
+      this section presents a few examples of diagrams created in this
+      way. Note that they are merely examples of typical diagrams from
+      RFCs.
+    </t><t>The SVG diagrams for this section can be seen at
+      <xref target='This-I-D-with-SVG-included' />
+      along with an html version of this draft that includes the SVG
+      diagrams.
+    </t>
+
+    <section title="Packet Layout Diagrams">
+      <t>Example: Figure 3 from <xref target='RFC0793' />.</t>
+    </section>
+
+    <section title="Sequence Diagrams (1)">
+      <t>Example: Figure 6 from <xref target='ExpTrustedProxy' />.</t>
+    </section>
+
+    <section title="Sequence Diagrams (2)">
+        <t>Example: Figure 3 from <xref target='RFC4321' />.</t>
+    </section>
+  </section>
+
+  <section title="IANA Considerations">
+    <t>
+     This document does not create a new registry nor does it register any
+     values in existing registries; no IANA action is required.
+    </t>
+  </section>
+
+  <section title="Acknowledgements">
+    <t>
+      Thanks to the RSE and the Design Team members for their helpful comments
+      and suggestions for SVG 1.2 RFC, as well as from the wider IETF community.
+    </t>
+  </section>
+
+  <section title="Revision History [RFC Editor please delete]">
+    <t><list style="hanging" hangIndent="3">
+      <t hangText="version -02, 25 Feb 16:">
+        <vspace/>Changed the example metalanguage by removing the metalanguage
+        code.  The svg diagrams remain, as examples of diagrams that have
+        appeared in earlier RFCs.
+         </t>
+      <t hangText="version -01, 26 Jan 16:">
+        <vspace/>rnc schema changed to use Joe Hildebrand's version,
+        github: "rename title element *reference* to svgTitle, in order
+        to allow combination with XML2RFC schema.  Note: XML element
+        name does not change."          
+         </t>
+      <t hangText="version -00,  6 Jan 16:">
+        <vspace/>Now an IAB draft, changed name to draft-iab-svg-rfc-00.
+         </t>
+      <t hangText="version -13, 16 Oct 15:">
+        <vspace/>Added Informative Reference to XML2RFC v3 draft on
+          'how to include SVG diagrams'.
+          <vspace />Added Informative Reference to Nevil's home page for a
+          version of this I-D with its SVG diagrams included.    
+        <vspace/>Added Informative References to RFC0793 and I-Ds for the
+          example diagrams.
+        <vspace/>Changed 'colour' to 'color' so as to be consistent.
+        <vspace/>Fixed other typos (thanks to Dave Thaler for all these)!
+        <vspace/>Removed 'grey' color from example diagrams.
+        </t>
+      <t hangText="version -12, 24 Sep 15:">
+        <vspace/>Appendix A added: a complete relax-ng compact (rnc)
+          schema for SVG-1.2-RFC.
+        <vspace/>Section 2.1: Elements/attributes/properties table
+          updated to match the schema in Appendix A.  
+        </t>
+      <t hangText="version -11, 17 Aug 15:">
+        <vspace/>Section 1: Fixed typo in "Details are expected to
+          change" paragraph.
+         </t>
+      <t hangText="version -10, 14 Aug 15:">
+        <vspace/>Section 1: Added "Details are expected to change" paragraph.
+         </t>
+      <t hangText="version -09, 31 Mar 15:">
+        <vspace/>No changes, version number incremented to
+           keep draft alive
+         </t>
+      <t hangText="version -08, 29 Sep 14:">
+         <vspace/>Section 1: Changed comment about diagrams 'not
+           being normative' to 'not complete specifications in
+           themselves.
+         <vspace/>Section 2.1: Added SVG 1.2 Tiny 'id' attribute
+           because most drawing packages use it in constructing
+           drawings.
+         <vspace/>Section 2.1: Added SVG 1.2 Tiny 'role' attribute
+           so that ARIA can use it.
+         <vspace/>Section 3: added comment about changes to xml2rfc
+           required to include SVG diagrams.
+         <vspace/>Section 4: Added reference to svg-aria-primer.
+         </t>
+      <t hangText="version -07, 3 Jul 14:">
+         <vspace/>Expanded text about Accessibility in 
+           'how to create SVG drawings' section into 'Accessibility
+           Considerations section.  Added two SVG Accessibility
+           references to support that.</t>
+      <t hangText="version -06, 26 Jun 14:">
+         <vspace/>Remove trailing / from URL in section 4; the html
+           version on tools.ietf.org/html assumed the next word was
+           part of that URL.</t>
+      <t hangText="version -05, 25 Jun 14:">
+         <vspace/>Improved section on 'how to create SVG drawings'
+           By adding some text about which elements aren't allowed
+           in SVG 1.2 RFC.
+         <vspace/>Added more text describing the tool for checking,
+           stripping out or replacing incompatible elements and attributes
+           from an SVG file.
+           </t>
+      <t hangText="version -04, 30 Apr 14:">
+         <vspace/>Fixed typos, used full references for two of the
+           w3c refs - each had an author name using UTF8 characters.
+         <vspace/>Moved the Elements and Attributes appendix up earlier
+           to make it sub-section 2.1.
+         <vspace/>Disclaimer added to the Meta-languages section.
+           </t>
+      <t hangText="version -03, 14 Apr 14:">
+         <vspace/>Added two more example diagrams; a simple packet
+           layout, and a diagram that uses lots of diagonal lines.</t>
+      <t hangText="version -02, 12 Feb 14:">
+         <vspace/>Added metalanguage example to make time-sequence
+           drawings.</t>
+      <t hangText="version -01, 11 Feb 14:">
+         <vspace/>Allow links to 'long-term stable URIs'
+         <vspace/>Link URIs must be ASCII only
+         <vspace/>Need for tools to check SVG 1.2 RFC compatibility
+           and to strip 'unnecessary' attributes explicitly stated.
+         <vspace/>Statement that drawings can't be normative removed;
+           Postscript-only RFCs already exist.
+         <vspace/>Added most attributes and elements to 
+           the Appendix.</t>
+      <t hangText="version -00, 29 Jan 14:">
+         <vspace/>Initial version, using content from Nevil's
+         <vspace/>emails to the Design Team.</t>
+    </list></t>
+  </section>
+
+</middle>
+
+<back>
+  <references title='Normative References'>
+    <?rfc include="reference.RFC.6949"?> <!-- RFC Series Format Requirements -->
+    <!-- include="reference.W3C.REC-SVGTiny12-20081222.xml"?> -->
+    <reference anchor='W3C.REC-SVGTiny12-20081222'
+      target='http://www.w3.org/TR/2008/REC-SVGTiny12-20081222'>
+    <front>
+      <title>Scalable Vector Graphics (SVG) Tiny 1.2 Specification</title>
+      <author initials='O.' surname='Andersson' fullname='Ola Andersson' />
+      <author initials='R.' surname='Berjon' fullname='Robin Berjon' />
+      <!-- <author initials='E.' surname='DahlstrÃ¶m'
+        fullname='Erik DahlstrÃ¶m' /> trom, dierassis over o -->
+      <author initials='E.' surname='Dahlstrom' fullname='Erik Dahlstrom' />
+      <author initials='A.' surname='Emmons' fullname='Andrew Emmons' />
+      <author initials='J.' surname='Ferraiolo' fullname='Jon Ferraiolo' />
+      <author initials='A.' surname='Grasso' fullname='Anthony Grasso' />
+      <author initials='V.' surname='Hardy' fullname='Vincent Hardy' />
+      <author initials='S.' surname='Hayman' fullname='Scott Hayman' />
+      <author initials='D.' surname='Jackson' fullname='Dean Jackson' />
+      <author initials='C.' surname='Lilley' fullname='Chris Lilley' />
+      <author initials='C.' surname='McCormack' fullname='Cameron McCormack' />
+      <author initials='A.' surname='Neumann' fullname='Andreas Neumann' />
+      <author initials='C.' surname='Northway' fullname='Craig Northway' />
+      <author initials='A.' surname='Quint' fullname='Antoine Quint' />
+      <author initials='N.' surname='Ramani' fullname='Nandini Ramani' />
+      <author initials='D.' surname='Schepers' fullname='Doug Schepers' />
+      <author initials='A.' surname='Shellshear' fullname='Andrew Shellshear' />
+
+      <date month='December' day='22' year='2008' />
+    </front>
+    <seriesInfo name='World Wide Web Consortium Recommendation'
+      value='REC-SVGTiny12-20081222' />
+    <format type='HTML'
+      target='http://www.w3.org/TR/2008/REC-SVGTiny12-20081222' />
+    </reference>
+    <!-- include="reference.W3C.REC-CSS2-20110607.xml"?> -->
+    <reference anchor='W3C.REC-CSS2-20110607'
+      target='http://www.w3.org/TR/2011/REC-CSS2-20110607'>
+      <front>
+        <title>Cascading Style Sheets Level 2 Revision 1
+          (CSS 2.1) Specification</title>
+        <author initials='B.' surname='Bos' fullname='Bert Bos' />
+          <!-- Celik spells his name starting with a tilde under C
+            <author initials='T.' surname='Ãelik' 
+              fullname='Tantek Ãelik'> -->
+        <author initials='T.' surname='Celik' fullname='Tantek Celik' />
+        <author initials='I.' surname='Hickson' fullname='Ian Hickson' />
+        <author initials='H.' surname='Lie' fullname='HÃ¥kon Wium Lie' />
+        <date month='June' day='7' year='2011' />
+      </front>
+      <seriesInfo name='World Wide Web Consortium Recommendation'
+        value='REC-CSS2-20110607' />
+      <format type='HTML'
+        target='http://www.w3.org/TR/2011/REC-CSS2-20110607' />
+    </reference>
+  </references>
+  <references title='Informative References'>
+    <!-- include="reference.W3C.REC-SVG11-20110816.xml"?> -->
+    <reference anchor='W3C.REC-SVG11-20110816'
+      target='http://www.w3.org/TR/2011/REC-SVG11-20110816'>
+    <front>
+      <title>Scalable Vector Graphics (SVG) 1.1 (Second Edition)</title>
+      <!-- <author initials='E.' surname='DahlstrÃ¶m' fullname='Erik DahlstrÃ¶m'> -->
+      <author initials='E.' surname='Dahlstrom' fullname='Erik Dahlstrom' />
+      <author initials='P.' surname='Dengler' fullname='Patrick Dengler' />
+      <author initials='A.' surname='Grasso' fullname='Anthony Grasso' />
+      <author initials='C.' surname='Lilley' fullname='Chris Lilley' />
+      <author initials='C.' surname='McCormack' fullname='Cameron McCormack' />
+      <author initials='D.' surname='Schepers' fullname='Doug Schepers' />
+      <author initials='J.' surname='Watt' fullname='Jonathan Watt' />
+      <author initials='J.' surname='Ferraiolo' fullname='Jon Ferraiolo' />
+      <author initials='J.' surname='Fujisawa' fullname='Jun Fujisawa' />
+      <author initials='D.' surname='Jackson' fullname='Dean Jackson' />
+      <date month='August' day='16' year='2011' />
+    </front>
+    <seriesInfo name='World Wide Web Consortium Recommendation'
+      value='REC-SVG11-20110816' />
+    <format type='HTML' target='http://www.w3.org/TR/2011/REC-SVG11-20110816' />
+    </reference>
+    <reference anchor='SVG-ACCESS-TIPS' 
+      target='http://www.sitepoint.com/tips-accessible-svg'>
+      <front>
+        <title>Tips for Creating Accessible SVG</title>
+        <author initials='L.' surname='Watson' fullname='Leonie Watson' />
+        <date month='May' day='6' year='2014' />
+      </front>
+      <seriesInfo name='SitePoint' value='tips-accessible-svg' />
+      <format type='HTML'
+        target='http://www.sitepoint.com' />
+    </reference>
+    <reference anchor='SVG-ARIA-PRIMER' 
+      target='http://www.w3.org/TR/2010/WD-wai-aria-primer-20100916'>
+      <front>
+        <title>WAI-ARIA 1.0 Primer</title>
+        <author initials='L.' surname='Pappas' fullname='Lisa Pappas' />
+        <author initials='R.' surname='Schwerdtfeger' fullname='Richard Schwerdtfeger' />
+        <author initials='M.' surname='Cooper' fullname='Michael Cooper' />
+        <date month='September' day='16' year='2010' />
+      </front>
+    <seriesInfo name='World Wide Web Consortium WD'
+      value='WD-wai-aria-primer-20100916' />
+      <format type='HTML'
+        target='http://www.w3.org/TR/2010/WD-wai-aria-primer-20100916' />
+    </reference>
+    <reference anchor='SVG-USING-ARIA'
+      target=
+ 'http://blog.paciellogroup.com/2013/12/using-aria-enhance-svg-accessibility'>
+      <front>
+        <title>Using ARIA to enhance SVG accessibility</title>
+        <author initials='L.' surname='Watson' fullname='Leonie Watson' />
+        <date month='December' day='19' year='2013' />
+      </front>
+      <seriesInfo name='The Paciello Group'
+        value='2013/12/using-aria-enhance-svg-accessibility' />
+      <format type='HTML'
+        target='http://blog.paciellogroup.com' />
+    </reference>
+    <reference anchor='XML2RFCv3'>
+      <front>
+      <title>The "xml2rfc" version 3 Vocabulary</title>
+      <author initials="P." surname="Hoffman" fullname="Paul Hoffman"/>
+      <date month="February" year="2016"/>
+      </front>
+      <seriesInfo name="Internet-Draft" value="draft-iab-xml2rfc-03"/>
+    </reference>
+    <reference anchor='This-I-D-with-SVG-included'>
+      <front>
+	<title>Example html version of this I-D with its SVG diagrams included
+	</title>
+      <author initials='N' surname='Brownlee' fullname='Nevil Brownlee'>
+	 <organization />
+      </author>
+      <date month='October 16' year='2015' />
+      </front> 
+      <seriesInfo name="Nevil's home page,"
+             value='https://www.cs.auckland.ac.nz/~nevil/SVG_RFC_1.2'/>
+    </reference>
+    <?rfc include="reference.RFC.0793"?>  <!-- TCP header layout -->
+    <reference anchor='ExpTrustedProxy'>
+      <front>
+      <title>Explicit Trusted Proxy in HTTP/2.0</title>
+      <author initials='S' surname='Loretto'>  <organization /> </author>
+      <author initials='J' surname='Mattson'>  <organization /> </author>
+      <author initials='R' surname='Skog'>  <organization /> </author>
+      <author initials='H' surname='Spaak'>  <organization /> </author>
+      <author initials='G' surname='Gus'>  <organization /> </author>
+      <author initials='D' surname='Druta'>  <organization /> </author>
+      <author initials='M' surname='Hafeez'>  <organization /> </author>
+      <date month='February' year='2014' />
+      </front>
+      <seriesInfo name='Internet Draft'
+          value='draft-loreto-httpbis-trusted-proxy20-01'/>
+    </reference>
+    <?rfc include="reference.RFC.4321"?>  <!-- SIP problems -->
+      </references>
+
+<section title="RELAX NG Compact (rnc) Schema for SVG 1.2 RFC">
+  <t> The following rnc schema can be used to check whether
+  an svg file conforms to SVG 1.2 RFC.  For example, if this schema
+  were contained in a file called SVG-1.2-RFC.rnc, the following command
+  will test whether svg file diagram.svg is a conformant  SVG 1.2 RFC
+  drawing.
+  </t><t>
+  jing -c SVG-1.2-RFC.rnc diagram.svg
+  </t>
+<figure><artwork><![CDATA[
+#---  SVG 1.2 RFC rnc schema;  Nevil Brownlee, Thu 26 Jan 2016 (NZST)
+
+default namespace = "http://www.w3.org/2000/svg"
+namespace ns1 = "http://www.w3.org/1999/xlink"
+
+rfc-color = (  # SVG-1.2-RFC doesn't allow "color or grey-scale"
+  "black" | "white" | "#000000" | "#FFFFFF" | "#ffffff" | "inherit" )
+start = svg
+svg =
+  element svg {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+
+
+}?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+
+    attribute width { xsd:string }?,
+    attribute height { xsd:string }?,
+    attribute preserveAspectRatio {
+      xsd:string { pattern = "\s*(none|xMidYMid)\s*(meet)?\s*" }
+    }?,
+    attribute viewBox { text }?,
+    attribute zoomAndPan { "disable" }?,
+    attribute version {
+      xsd:string "1.2"
+    }?,
+    attribute baseProfile {
+      xsd:string "tiny"
+    }?,
+    attribute contentScriptType { xsd:string }?,
+    attribute snapshotTime { xsd:string "none" | xsd:string }?,
+    attribute timelineBegin {
+      xsd:string "onLoad" | xsd:string "onStart"
+    }?,
+    attribute playbackOrder {
+      xsd:string "all" | xsd:string "forwardOnly"
+    }?,
+    (desc
+     | svgTitle
+     | path
+     | rect
+     | circle
+     | line
+     | ellipse
+     | polyline
+     | polygon
+     | solidColor
+     | textArea
+     | linearGradient
+     | radialGradient
+     | \text
+     | g
+     | defs
+     | use
+     | a)*
+  }
+desc =
+  element desc {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    ((attribute display {
+        "inline"
+        | "block"
+        | "list-item"
+        | "run-in"
+        | "compact"
+        | "marker"
+        | "table"
+        | "inline-table"
+        | "table-row-group"
+        | "table-header-group"
+        | "table-footer-group"
+        | "table-row"
+        | "table-column-group"
+        | "table-column"
+        | "table-cell"
+        | "table-caption"
+        | "none"
+        | "inherit"
+      }?,
+      attribute visibility { "visible" | "hidden" | "collapse"
+        | "inherit" }?,
+      attribute image-rendering {
+        "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+      }?,
+      attribute shape-rendering {
+        "auto"
+        | "optimizeSpeed"
+        | "crispEdges"
+        | "geometricPrecision"
+        | "inherit"
+      }?,
+      attribute text-rendering {
+        "auto"
+        | "optimizeSpeed"
+        | "optimizeLegibility"
+        | "geometricPrecision"
+        | "inherit"
+      }?,
+      attribute buffered-rendering {
+        "auto" | "dynamic" | "static" | "inherit"
+      }?)
+     & (attribute viewport-fill { "none" | rfc-color }?,
+        attribute viewport-fill-opacity { "inherit" | xsd:string }?)),
+    text
+  }
+svgTitle =
+  element title {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    ((attribute display {
+        "inline"
+        | "block"
+        | "list-item"
+        | "run-in"
+        | "compact"
+        | "marker"
+        | "table"
+        | "inline-table"
+        | "table-row-group"
+        | "table-header-group"
+        | "table-footer-group"
+        | "table-row"
+        | "table-column-group"
+        | "table-column"
+        | "table-cell"
+        | "table-caption"
+        | "none"
+        | "inherit"
+      }?,
+      attribute visibility { "visible" | "hidden"
+        | "collapse" | "inherit" }?,
+      attribute image-rendering {
+        "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+      }?,
+      attribute shape-rendering {
+        "auto"
+        | "optimizeSpeed"
+        | "crispEdges"
+        | "geometricPrecision"
+        | "inherit"
+      }?,
+      attribute text-rendering {
+        "auto"
+        | "optimizeSpeed"
+        | "optimizeLegibility"
+        | "geometricPrecision"
+        | "inherit"
+      }?,
+      attribute buffered-rendering {
+        "auto" | "dynamic" | "static" | "inherit"
+      }?)
+     & (attribute viewport-fill { "none" | rfc-color }?,
+        attribute viewport-fill-opacity { "inherit" | xsd:string }?)),
+    text
+  }
+path =
+  element path {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute transform { xsd:string | "none" }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute d { xsd:string }?,
+    attribute pathLength { xsd:string }?,
+    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
+    (desc
+     | svgTitle)*
+  }
+rect =
+  element rect {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute transform { xsd:string | "none" }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute x { xsd:string }?,
+    attribute y { xsd:string }?,
+    attribute width { xsd:string }?,
+    attribute height { xsd:string }?,
+    attribute rx { xsd:string }?,
+    attribute ry { xsd:string }?,
+    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
+    (desc
+     | svgTitle)*
+  }
+circle =
+  element circle {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute transform { xsd:string | "none" }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute cx { xsd:string }?,
+    attribute cy { xsd:string }?,
+    attribute r { xsd:string }?,
+    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
+    (desc
+     | svgTitle)*
+  }
+line =
+  element line {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute transform { xsd:string | "none" }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute x1 { xsd:string }?,
+    attribute y1 { xsd:string }?,
+    attribute x2 { xsd:string }?,
+    attribute y2 { xsd:string }?,
+    (desc
+     | svgTitle)*
+  }
+ellipse =
+  element ellipse {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute transform { xsd:string | "none" }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute rx { xsd:string }?,
+    attribute ry { xsd:string }?,
+    attribute cx { xsd:string }?,
+    attribute cy { xsd:string }?,
+    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
+    (desc
+     | svgTitle)*
+  }
+polyline =
+  element polyline {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute transform { xsd:string | "none" }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute points { xsd:string }?,
+    (desc
+     | svgTitle)*
+  }
+polygon =
+  element polygon {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute transform { xsd:string | "none" }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute points { xsd:string }?,
+    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
+    (desc
+     | svgTitle)*
+  }
+solidColor =
+  element solidColor {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    (desc
+     | svgTitle)*
+  }
+textArea =
+  element textArea {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute transform { xsd:string | "none" }?,
+    attribute x { xsd:string }?,
+    attribute y { xsd:string }?,
+    attribute width { xsd:string | "auto" }?,
+    attribute height { xsd:string | "auto" }?,
+    (tspan
+     | desc
+     | svgTitle
+     | tspan_2
+     | text
+     | a_2)+
+  }
+linearGradient =
+  element linearGradient {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute gradientUnits { "userSpaceOnUse" | "objectBoundingBox" }?,
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute x1 { xsd:string }?,
+    attribute y1 { xsd:string }?,
+    attribute x2 { xsd:string }?,
+    attribute y2 { xsd:string }?,
+    (desc
+     | svgTitle)*
+  }
+radialGradient =
+  element radialGradient {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute gradientUnits { "userSpaceOnUse" | "objectBoundingBox" }?,
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute cx { xsd:string }?,
+    attribute cy { xsd:string }?,
+    attribute r { xsd:string }?,
+    (desc
+     | svgTitle)*
+  }
+\text =
+  element text {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute transform { xsd:string | "none" }?,
+    attribute x { xsd:string }?,
+    attribute y { xsd:string }?,
+    attribute rotate { xsd:string }?,
+    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
+    (desc
+     | svgTitle
+     | tspan_2
+     | text
+     | a_2)+
+  }
+g =
+  element g {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute transform { xsd:string | "none" }?,
+    attribute style { xsd:string }?,
+        # Added to SVG-1.2-RFC (for Inkscape)
+    attribute visibility {
+      "visible" | "hidden" | "collapse" | "inherit" }?,
+        # Added to SVG-1.2-RFC (for LibreOffice)
+    (desc
+     | svgTitle
+     | path
+     | rect
+     | circle
+     | line
+     | ellipse
+     | polyline
+     | polygon
+     | solidColor
+     | textArea
+     | linearGradient
+     | radialGradient
+     | \text
+     | g
+     | defs
+     | use
+     | a)*
+  }
+defs =
+  element defs {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    (desc
+     | svgTitle
+     | path
+     | rect
+     | circle
+     | line
+     | ellipse
+     | polyline
+     | polygon
+     | solidColor
+     | textArea
+     | linearGradient
+     | radialGradient
+     | \text
+     | g
+     | defs
+     | use
+     | a)*
+  }
+use =
+  element use {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute transform { xsd:string | "none" }?,
+    attribute ns1:show { "embed" }?,
+    attribute ns1:actuate { "onLoad" }?,
+    attribute ns1:type { "simple" }?,
+    attribute ns1:role { xsd:anyURI | xsd:string }?,
+    attribute ns1:arcrole { xsd:anyURI | xsd:string }?,
+    attribute ns1:title { text }?,
+    attribute ns1:href { xsd:anyURI | xsd:string }?,
+    attribute x { xsd:string }?,
+    attribute y { xsd:string }?,
+    (desc
+     | svgTitle)*
+  }
+a =
+  element a {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute transform { xsd:string | "none" }?,
+    attribute ns1:show { "new" | "replace" }?,
+    attribute ns1:actuate { "onRequest" }?,
+    attribute ns1:type { "simple" }?,
+    attribute ns1:role { xsd:anyURI | xsd:string }?,
+    attribute ns1:arcrole { xsd:anyURI | xsd:string }?,
+    attribute ns1:title { text }?,
+    attribute ns1:href { xsd:anyURI | xsd:string }?,
+    attribute target {
+      "_replace" | "_self" | "_parent" | "_top" | "_blank" | xsd:Name
+    }?,
+    (desc
+     | svgTitle
+     | path
+     | rect
+     | circle
+     | line
+     | ellipse
+     | polyline
+     | polygon
+     | solidColor
+     | textArea
+     | linearGradient
+     | radialGradient
+     | \text
+     | g
+     | defs
+     | use)*
+  }
+stop =
+  element stop {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "inherit" | xsd:string }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { "inherit" | xsd:string }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { "inherit" | xsd:string }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { "inherit" | xsd:string }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute offset { xsd:string }?,
+    (desc
+     | svgTitle)*
+  }
+tspan =
+  element tspan {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute x { xsd:string }?,  # For SVG-1.2-RFC
+    attribute y { xsd:string }?,
+    (tbreak
+     | desc
+     | svgTitle
+     | tspan_2
+     | text
+     | a_2)+
+  }
+tspan_2 =
+  element tspan {
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    attribute x { xsd:string }?,  # For SVG-1.2-RFC
+    attribute y { xsd:string }?,
+    (desc
+     | svgTitle
+     | tspan_2
+     | text
+     | a_2)+
+  }
+a_2 =
+  element a {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?,
+    ((attribute fill-opacity { "inherit" | xsd:string }?,
+      attribute stroke-opacity { "inherit" | xsd:string }?)
+     & (attribute fill { "none" | rfc-color }?,
+        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
+        attribute stroke { rfc-color }?,
+        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
+        attribute stroke-dashoffset { "inherit" | xsd:string }?,
+        attribute stroke-linecap {
+          "butt" | "round" | "square" | "inherit"
+        }?,
+        attribute stroke-linejoin {
+          "miter" | "round" | "bevel" | "inherit"
+        }?,
+        attribute stroke-miterlimit { "inherit" | xsd:string }?,
+        attribute stroke-width { "inherit" | xsd:string }?,
+        attribute color { rfc-color }?,
+        attribute color-rendering {
+          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
+        }?)
+     & attribute vector-effect {
+         "none" | "non-scaling-stroke" | "inherit"
+       }?
+     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
+        attribute unicode-bidi {
+          "normal" | "embed" | "bidi-override" | "inherit"
+        }?)
+     & (attribute solid-color { rfc-color }?,
+        attribute solid-opacity { "inherit" | xsd:string }?)
+     & (attribute display-align {
+          "auto" | "before" | "center" | "after" | "inherit"
+        }?,
+        attribute line-increment { "auto" | "inherit" | xsd:string }?)
+     & (attribute stop-color { rfc-color }?,
+        attribute stop-opacity { "inherit" | xsd:string }?)
+     & (attribute font-family { "inherit" | xsd:string }?,
+        attribute font-size { "inherit" | xsd:string }?,
+        attribute font-style {
+          "normal" | "italic" | "oblique" | "inherit"
+        }?,
+        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
+        attribute font-weight {
+          "normal"
+          | "bold"
+          | "bolder"
+          | "lighter"
+          | "inherit"
+        }?,
+        attribute text-anchor {
+          "start" | "middle" | "end" | "inherit"
+        }?,
+        attribute text-align {
+          "start" | "center" | "end" | "inherit"
+        }?)),
+    attribute transform { xsd:string | "none" }?,
+    attribute ns1:show { "new" | "replace" }?,
+    attribute ns1:actuate { "onRequest" }?,
+    attribute ns1:type { "simple" }?,
+    attribute ns1:role { xsd:anyURI | xsd:string }?,
+    attribute ns1:arcrole { xsd:anyURI | xsd:string }?,
+    attribute ns1:title { text }?,
+    attribute ns1:href { xsd:anyURI | xsd:string }?,
+    attribute target {
+      "_replace" | "_self" | "_parent" | "_top" | "_blank" | xsd:Name
+    }?,
+    (desc
+     | svgTitle
+     | tspan_2
+     | text)+
+  }
+tbreak =
+  element tbreak {
+    (attribute id { xsd:NCName }
+     | attribute xml:id { xsd:NCName })?,
+    attribute xml:base { xsd:anyURI | xsd:string }?,
+    attribute xml:lang { xsd:language? }?,
+    attribute class { xsd:NMTOKENS }?,
+    attribute role { xsd:string }?,
+    attribute rel { xsd:string }?,
+    attribute rev { xsd:string }?,
+    attribute typeof { xsd:string }?,
+    attribute content { xsd:string }?,
+    attribute datatype { xsd:string }?,
+    attribute resource { xsd:string }?,
+    attribute about { xsd:string }?,
+    attribute property { xsd:string }?,
+    attribute xml:space { "default" | "preserve" }?,
+    attribute requiredFeatures { xsd:string }?,
+    attribute requiredExtensions { xsd:string }?,
+    attribute requiredFormats { xsd:string }?,
+    attribute requiredFonts { xsd:string }?,
+    attribute systemLanguage { xsd:string }?
+  }
+
+#---  End of SVG 1.2 RFC rnc schema
+]]></artwork></figure>
+</section>
+
+</back>
+</rfc>
