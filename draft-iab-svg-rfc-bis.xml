@@ -23,7 +23,7 @@
     <address><email>n.brownlee@auckland.ac.nz</email></address>
   </author>
 
-  <date month="December" year="2016" />
+  <date month="January" year="2017" />
 
   <abstract>
     <t>This document specifies SVG 1.2 RFC -- an SVG profile for use in
@@ -94,7 +94,7 @@
     </t><t>
       Appendix A (below) provides a complete RELAX NG Compact (RNC) schema
       <xref target="RNG-HOME"/> for SVG 1.2 RFC.  It is derived from
-      the SVG 1.2 schema, and is the formal definition of SVG 1.2 RFC.
+      the SVG 1.2 Tiny schema, and is the formal definition of SVG 1.2 RFC.
       The remainder of this section gives a simplified -- i.e., easier to
       read and understand -- overview of SVG 1.2 RFC.
     </t><t>
@@ -156,10 +156,10 @@
  left, and their allowed values are given in parentheses on the
  right.
  
- <color> is the list of allowed colors, a black-and-white
+ [color] is the list of allowed colors, a black-and-white
          subset of the SVG color names.
  
- <style> is a set of CSS attributes that are commonly used (by SVG
+ [style] is a set of CSS attributes that are commonly used (by SVG
          drawing applications).  They are not part of SVG Tiny 1.2
          but are included here for compatibility.  Note that
 
@@ -174,7 +174,7 @@
    svg              (version=1.2, baseProfile=tiny, width, viewBox,
                      preserveAspectRatio, snapshotTime, height,
                      id, role)
-   g                (label, class, id, role, fill, <style>, transform)
+   g                (label, class, id, role, fill, [style], transform)
    defs             (id, role, fill)
    title            (id, role)
    desc             (id, role)
@@ -183,14 +183,14 @@
                      fill, transform)
 
    rect             (x, y, width, height, rx, ry, stroke-miterlimit,
-                     id, role, fill, <style>, transform)
-   circle           (cx, cy, r, id, role, fill, <style>, transform)
+                     id, role, fill, [style], transform)
+   circle           (cx, cy, r, id, role, fill, [style], transform)
    ellipse          (cx, cy, rx, ry, id, role,
-                     fill, <style>, transform)
+                     fill, [style], transform)
    line             (x1, y1, x2, y2, id, role, fill, transform)
    polyline         (points, id, role, fill, transform)
-   polygon          (points, id, role, fill, <style>, transform)
-   text             (x, y, rotate, space, id, role, fill, <style>,
+   polygon          (points, id, role, fill, [style], transform)
+   text             (x, y, rotate, space, id, role, fill, [style],
                      transform)
    tspan            (x, y, id, role, fill)
    textArea         (x, y, width, height, auto, id, role, fill,
@@ -198,21 +198,18 @@
    tbreak           (id, role)
 
    solidColor       (id, role, fill)
-   linearGradient   (gradientUnits, x1, y1, x2, y2, id, role, fill)
-   radialGradient   (gradientUnits, cx, cy, r, id, role, fill)
-   stop             (id, role, fill)
    path             (d, pathLength, stroke-miterlimit,
-                     id, role, fill, <style>, transform)
+                     id, role, fill, [style], transform)
   
  Properties: (most allow "inherit" as a value)
 
-   <style>          (font-family, font-weight, font-style,
+   [style]          (font-family, font-weight, font-style,
                      font-variant, direction, unicode-bidi,
                      text-anchor, fill, fill-rule)
    
-   <color>          (black, white, #000000, #ffffff, #FFFFFF)
+   [color]          (black, white, #000000, #ffffff, #FFFFFF)
 
-   stroke           (<color>, none, currentColor)
+   stroke           ([color], none, currentColor)
    stroke-width 
    stroke-linecap   (butt, round, square)
    stroke-linejoin  (miter, round, bevel)
@@ -240,9 +237,9 @@
 
    opacity
    solid-opacity
-   solid-color    (currentColor, <color>)
-   color          (currentColor, <color>)
-   stop-color     (currentColor, <color>)
+   solid-color    (currentColor, [color])
+   color          (currentColor, [color])
+   stop-color     (currentColor, [color])
    stop-opacity
 
    line-increment (auto)
@@ -257,7 +254,7 @@
    direction      (ltr, rtl)
    unicode-bidi   (normal, embed, bidi-override)
    text-anchor    (start, middle, end)
-   fill           (none, <color>)
+   fill           (none, [color])
    fill-rule      (nonzero, evenodd)
    fill-opacity
 ]]></artwork></figure>
@@ -558,13 +555,14 @@
   </t>
 
 <figure><artwork><![CDATA[
-#---  SVG 1.2 RFC RNC schema; Nevil Brownlee, Thu 26 Jan 2016 (NZST)
+#---  SVG 1.2 RFC rnc schema;  Nevil Brownlee, Tue Jan 16 2018 (NZDT)
 
 default namespace = "http://www.w3.org/2000/svg"
-namespace ns1 = "http://www.w3.org/1999/xlink"
+namespace xlink = "http://www.w3.org/1999/xlink"
 
-rfc-color = (  # SVG-1.2-RFC doesn't allow color or grayscale
-  "black" | "white" | "#000000" | "#FFFFFF" | "#ffffff" | "inherit" )
+rfc-color = (  # SVG-1.2-RFC doesn't allow "color or grey-scale"
+  "black" | "white" | "#000000" | "#FFFFFF" | "#ffffff" |
+  "currentColor" | "inherit" )
 start = svg
 svg =
   element svg {
@@ -602,7 +600,8 @@ svg =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -616,7 +615,9 @@ svg =
         }?,
         attribute text-anchor {
           "start" | "middle" | "end" | "inherit"
-        }?,
+
+
+}?,
         attribute text-align {
           "start" | "center" | "end" | "inherit"
         }?)),
@@ -635,27 +636,23 @@ svg =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
+
     attribute width { xsd:string }?,
     attribute height { xsd:string }?,
     attribute preserveAspectRatio {
       xsd:string { pattern = "\s*(none|xMidYMid)\s*(meet)?\s*" }
     }?,
     attribute viewBox { text }?,
-    attribute zoomAndPan { "disable" }?,
     attribute version {
-      xsd:string "1.2"
+      xsd:string "1.0" | xsd:string "1.1" | xsd:string "1.2"
     }?,
     attribute baseProfile {
-      xsd:string "tiny"
+      xsd:string "none"
+      | xsd:string "tiny"
+      | xsd:string "basic"
+      | xsd:string "full"
     }?,
-    attribute contentScriptType { xsd:string }?,
     attribute snapshotTime { xsd:string "none" | xsd:string }?,
-    attribute timelineBegin {
-      xsd:string "onLoad" | xsd:string "onStart"
-    }?,
-    attribute playbackOrder {
-      xsd:string "all" | xsd:string "forwardOnly"
-    }?,
     (desc
      | svgTitle
      | path
@@ -667,8 +664,6 @@ svg =
      | polygon
      | solidColor
      | textArea
-     | linearGradient
-     | radialGradient
      | \text
      | g
      | defs
@@ -692,11 +687,6 @@ desc =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     ((attribute display {
         "inline"
         | "block"
@@ -717,8 +707,7 @@ desc =
         | "none"
         | "inherit"
       }?,
-      attribute visibility { "visible" | "hidden" | "collapse"
-        | "inherit" }?,
+      attribute visibility { "visible" | "hidden" | "collapse" | "inherit" }?,
       attribute image-rendering {
         "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
       }?,
@@ -760,11 +749,6 @@ svgTitle =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     ((attribute display {
         "inline"
         | "block"
@@ -785,8 +769,7 @@ svgTitle =
         | "none"
         | "inherit"
       }?,
-      attribute visibility { "visible" | "hidden"
-        | "collapse" | "inherit" }?,
+      attribute visibility { "visible" | "hidden" | "collapse" | "inherit" }?,
       attribute image-rendering {
         "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
       }?,
@@ -863,7 +846,8 @@ path =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -882,14 +866,8 @@ path =
         attribute text-align {
           "start" | "center" | "end" | "inherit"
         }?)),
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute d { xsd:string }?,
     attribute pathLength { xsd:string }?,
-    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
     (desc
      | svgTitle)*
   }
@@ -945,7 +923,8 @@ rect =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -964,18 +943,12 @@ rect =
         attribute text-align {
           "start" | "center" | "end" | "inherit"
         }?)),
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute x { xsd:string }?,
     attribute y { xsd:string }?,
     attribute width { xsd:string }?,
     attribute height { xsd:string }?,
     attribute rx { xsd:string }?,
     attribute ry { xsd:string }?,
-    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
     (desc
      | svgTitle)*
   }
@@ -1031,7 +1004,8 @@ circle =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1050,15 +1024,9 @@ circle =
         attribute text-align {
           "start" | "center" | "end" | "inherit"
         }?)),
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute cx { xsd:string }?,
     attribute cy { xsd:string }?,
     attribute r { xsd:string }?,
-    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
     (desc
      | svgTitle)*
   }
@@ -1114,7 +1082,8 @@ line =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1133,11 +1102,6 @@ line =
         attribute text-align {
           "start" | "center" | "end" | "inherit"
         }?)),
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute x1 { xsd:string }?,
     attribute y1 { xsd:string }?,
     attribute x2 { xsd:string }?,
@@ -1197,7 +1161,8 @@ ellipse =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1216,16 +1181,10 @@ ellipse =
         attribute text-align {
           "start" | "center" | "end" | "inherit"
         }?)),
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute rx { xsd:string }?,
     attribute ry { xsd:string }?,
     attribute cx { xsd:string }?,
     attribute cy { xsd:string }?,
-    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
     (desc
      | svgTitle)*
   }
@@ -1281,7 +1240,8 @@ polyline =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1300,11 +1260,6 @@ polyline =
         attribute text-align {
           "start" | "center" | "end" | "inherit"
         }?)),
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute points { xsd:string }?,
     (desc
      | svgTitle)*
@@ -1361,7 +1316,8 @@ polygon =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1380,13 +1336,7 @@ polygon =
         attribute text-align {
           "start" | "center" | "end" | "inherit"
         }?)),
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute points { xsd:string }?,
-    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
     (desc
      | svgTitle)*
   }
@@ -1426,7 +1376,8 @@ solidColor =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1499,7 +1450,8 @@ textArea =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1533,11 +1485,6 @@ textArea =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute transform { xsd:string | "none" }?,
     attribute x { xsd:string }?,
     attribute y { xsd:string }?,
@@ -1549,161 +1496,6 @@ textArea =
      | tspan_2
      | text
      | a_2)+
-  }
-linearGradient =
-  element linearGradient {
-    ((attribute fill-opacity { "inherit" | xsd:string }?,
-      attribute stroke-opacity { "inherit" | xsd:string }?)
-     & (attribute fill { "none" | rfc-color }?,
-        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
-        attribute stroke { rfc-color }?,
-        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
-        attribute stroke-dashoffset { "inherit" | xsd:string }?,
-        attribute stroke-linecap {
-          "butt" | "round" | "square" | "inherit"
-        }?,
-        attribute stroke-linejoin {
-          "miter" | "round" | "bevel" | "inherit"
-        }?,
-        attribute stroke-miterlimit { "inherit" | xsd:string }?,
-        attribute stroke-width { "inherit" | xsd:string }?,
-        attribute color { rfc-color }?,
-        attribute color-rendering {
-          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
-        }?)
-     & attribute vector-effect {
-         "none" | "non-scaling-stroke" | "inherit"
-       }?
-     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
-        attribute unicode-bidi {
-          "normal" | "embed" | "bidi-override" | "inherit"
-        }?)
-     & (attribute solid-color { rfc-color }?,
-        attribute solid-opacity { "inherit" | xsd:string }?)
-     & (attribute display-align {
-          "auto" | "before" | "center" | "after" | "inherit"
-        }?,
-        attribute line-increment { "auto" | "inherit" | xsd:string }?)
-     & (attribute stop-color { rfc-color }?,
-        attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
-        attribute font-size { "inherit" | xsd:string }?,
-        attribute font-style {
-          "normal" | "italic" | "oblique" | "inherit"
-        }?,
-        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
-        attribute font-weight {
-          "normal"
-          | "bold"
-          | "bolder"
-          | "lighter"
-          | "inherit"
-        }?,
-        attribute text-anchor {
-          "start" | "middle" | "end" | "inherit"
-        }?,
-        attribute text-align {
-          "start" | "center" | "end" | "inherit"
-        }?)),
-    attribute gradientUnits { "userSpaceOnUse" | "objectBoundingBox" }?,
-    (attribute id { xsd:NCName }
-     | attribute xml:id { xsd:NCName })?,
-    attribute xml:base { xsd:anyURI | xsd:string }?,
-    attribute xml:lang { xsd:language? }?,
-    attribute class { xsd:NMTOKENS }?,
-    attribute role { xsd:string }?,
-    attribute rel { xsd:string }?,
-    attribute rev { xsd:string }?,
-    attribute typeof { xsd:string }?,
-    attribute content { xsd:string }?,
-    attribute datatype { xsd:string }?,
-    attribute resource { xsd:string }?,
-    attribute about { xsd:string }?,
-    attribute property { xsd:string }?,
-    attribute xml:space { "default" | "preserve" }?,
-    attribute x1 { xsd:string }?,
-    attribute y1 { xsd:string }?,
-    attribute x2 { xsd:string }?,
-    attribute y2 { xsd:string }?,
-    (desc
-     | svgTitle)*
-  }
-radialGradient =
-  element radialGradient {
-    ((attribute fill-opacity { "inherit" | xsd:string }?,
-      attribute stroke-opacity { "inherit" | xsd:string }?)
-     & (attribute fill { "none" | rfc-color }?,
-        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
-        attribute stroke { rfc-color }?,
-        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
-        attribute stroke-dashoffset { "inherit" | xsd:string }?,
-        attribute stroke-linecap {
-          "butt" | "round" | "square" | "inherit"
-        }?,
-        attribute stroke-linejoin {
-          "miter" | "round" | "bevel" | "inherit"
-        }?,
-        attribute stroke-miterlimit { "inherit" | xsd:string }?,
-        attribute stroke-width { "inherit" | xsd:string }?,
-        attribute color { rfc-color }?,
-        attribute color-rendering {
-          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
-        }?)
-     & attribute vector-effect {
-         "none" | "non-scaling-stroke" | "inherit"
-       }?
-     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
-        attribute unicode-bidi {
-          "normal" | "embed" | "bidi-override" | "inherit"
-        }?)
-     & (attribute solid-color { rfc-color }?,
-        attribute solid-opacity { "inherit" | xsd:string }?)
-     & (attribute display-align {
-          "auto" | "before" | "center" | "after" | "inherit"
-        }?,
-        attribute line-increment { "auto" | "inherit" | xsd:string }?)
-     & (attribute stop-color { rfc-color }?,
-        attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
-        attribute font-size { "inherit" | xsd:string }?,
-        attribute font-style {
-          "normal" | "italic" | "oblique" | "inherit"
-        }?,
-        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
-        attribute font-weight {
-          "normal"
-          | "bold"
-          | "bolder"
-          | "lighter"
-          | "inherit"
-        }?,
-        attribute text-anchor {
-          "start" | "middle" | "end" | "inherit"
-        }?,
-        attribute text-align {
-          "start" | "center" | "end" | "inherit"
-        }?)),
-    attribute gradientUnits { "userSpaceOnUse" | "objectBoundingBox" }?,
-    (attribute id { xsd:NCName }
-     | attribute xml:id { xsd:NCName })?,
-    attribute xml:base { xsd:anyURI | xsd:string }?,
-    attribute xml:lang { xsd:language? }?,
-    attribute class { xsd:NMTOKENS }?,
-    attribute role { xsd:string }?,
-    attribute rel { xsd:string }?,
-    attribute rev { xsd:string }?,
-    attribute typeof { xsd:string }?,
-    attribute content { xsd:string }?,
-    attribute datatype { xsd:string }?,
-    attribute resource { xsd:string }?,
-    attribute about { xsd:string }?,
-    attribute property { xsd:string }?,
-    attribute xml:space { "default" | "preserve" }?,
-    attribute cx { xsd:string }?,
-    attribute cy { xsd:string }?,
-    attribute r { xsd:string }?,
-    (desc
-     | svgTitle)*
   }
 \text =
   element text {
@@ -1741,7 +1533,8 @@ radialGradient =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1775,16 +1568,10 @@ radialGradient =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute transform { xsd:string | "none" }?,
     attribute x { xsd:string }?,
     attribute y { xsd:string }?,
     attribute rotate { xsd:string }?,
-    attribute style { xsd:string }?,  # Added to SVG-1.2-RFC (Inkscape)
     (desc
      | svgTitle
      | tspan_2
@@ -1827,7 +1614,8 @@ g =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1861,17 +1649,7 @@ g =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute transform { xsd:string | "none" }?,
-    attribute style { xsd:string }?,
-        # Added to SVG-1.2-RFC (for Inkscape)
-    attribute visibility {
-      "visible" | "hidden" | "collapse" | "inherit" }?,
-        # Added to SVG-1.2-RFC (for LibreOffice)
     (desc
      | svgTitle
      | path
@@ -1883,8 +1661,6 @@ g =
      | polygon
      | solidColor
      | textArea
-     | linearGradient
-     | radialGradient
      | \text
      | g
      | defs
@@ -1927,7 +1703,8 @@ defs =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -1972,8 +1749,6 @@ defs =
      | polygon
      | solidColor
      | textArea
-     | linearGradient
-     | radialGradient
      | \text
      | g
      | defs
@@ -2016,7 +1791,8 @@ use =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -2050,19 +1826,14 @@ use =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute transform { xsd:string | "none" }?,
-    attribute ns1:show { "embed" }?,
-    attribute ns1:actuate { "onLoad" }?,
-    attribute ns1:type { "simple" }?,
-    attribute ns1:role { xsd:anyURI | xsd:string }?,
-    attribute ns1:arcrole { xsd:anyURI | xsd:string }?,
-    attribute ns1:title { text }?,
-    attribute ns1:href { xsd:anyURI | xsd:string }?,
+    attribute xlink:show { "embed" }?,
+    attribute xlink:actuate { "onLoad" }?,
+    attribute xlink:type { "simple" }?,
+    attribute xlink:role { xsd:anyURI | xsd:string }?,
+    attribute xlink:arcrole { xsd:anyURI | xsd:string }?,
+    attribute xlink:title { text }?,
+    attribute xlink:href { xsd:anyURI | xsd:string }?,
     attribute x { xsd:string }?,
     attribute y { xsd:string }?,
     (desc
@@ -2085,11 +1856,6 @@ a =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     ((attribute fill-opacity { "inherit" | xsd:string }?,
       attribute stroke-opacity { "inherit" | xsd:string }?)
      & (attribute fill { "none" | rfc-color }?,
@@ -2124,7 +1890,8 @@ a =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -2144,13 +1911,13 @@ a =
           "start" | "center" | "end" | "inherit"
         }?)),
     attribute transform { xsd:string | "none" }?,
-    attribute ns1:show { "new" | "replace" }?,
-    attribute ns1:actuate { "onRequest" }?,
-    attribute ns1:type { "simple" }?,
-    attribute ns1:role { xsd:anyURI | xsd:string }?,
-    attribute ns1:arcrole { xsd:anyURI | xsd:string }?,
-    attribute ns1:title { text }?,
-    attribute ns1:href { xsd:anyURI | xsd:string }?,
+    attribute xlink:show { "new" | "replace" }?,
+    attribute xlink:actuate { "onRequest" }?,
+    attribute xlink:type { "simple" }?,
+    attribute xlink:role { xsd:anyURI | xsd:string }?,
+    attribute xlink:arcrole { xsd:anyURI | xsd:string }?,
+    attribute xlink:title { text }?,
+    attribute xlink:href { xsd:anyURI | xsd:string }?,
     attribute target {
       "_replace" | "_self" | "_parent" | "_top" | "_blank" | xsd:Name
     }?,
@@ -2165,86 +1932,10 @@ a =
      | polygon
      | solidColor
      | textArea
-     | linearGradient
-     | radialGradient
      | \text
      | g
      | defs
      | use)*
-  }
-stop =
-  element stop {
-    ((attribute fill-opacity { "inherit" | xsd:string }?,
-      attribute stroke-opacity { "inherit" | xsd:string }?)
-     & (attribute fill { "inherit" | xsd:string }?,
-        attribute fill-rule { "inherit" | "nonzero" | "evenodd" }?,
-        attribute stroke { "inherit" | xsd:string }?,
-        attribute stroke-dasharray { "inherit" | "none" | xsd:string }?,
-        attribute stroke-dashoffset { "inherit" | xsd:string }?,
-        attribute stroke-linecap {
-          "butt" | "round" | "square" | "inherit"
-        }?,
-        attribute stroke-linejoin {
-          "miter" | "round" | "bevel" | "inherit"
-        }?,
-        attribute stroke-miterlimit { "inherit" | xsd:string }?,
-        attribute stroke-width { "inherit" | xsd:string }?,
-        attribute color { rfc-color }?,
-        attribute color-rendering {
-          "auto" | "optimizeSpeed" | "optimizeQuality" | "inherit"
-        }?)
-     & attribute vector-effect {
-         "none" | "non-scaling-stroke" | "inherit"
-       }?
-     & (attribute direction { "ltr" | "rtl" | "inherit" }?,
-        attribute unicode-bidi {
-          "normal" | "embed" | "bidi-override" | "inherit"
-        }?)
-     & (attribute solid-color { "inherit" | xsd:string }?,
-        attribute solid-opacity { "inherit" | xsd:string }?)
-     & (attribute display-align {
-          "auto" | "before" | "center" | "after" | "inherit"
-        }?,
-        attribute line-increment { "auto" | "inherit" | xsd:string }?)
-     & (attribute stop-color { "inherit" | xsd:string }?,
-        attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
-        attribute font-size { "inherit" | xsd:string }?,
-        attribute font-style {
-          "normal" | "italic" | "oblique" | "inherit"
-        }?,
-        attribute font-variant { "normal" | "small-caps" | "inherit" }?,
-        attribute font-weight {
-          "normal"
-          | "bold"
-          | "bolder"
-          | "lighter"
-          | "inherit"
-        }?,
-        attribute text-anchor {
-          "start" | "middle" | "end" | "inherit"
-        }?,
-        attribute text-align {
-          "start" | "center" | "end" | "inherit"
-        }?)),
-    (attribute id { xsd:NCName }
-     | attribute xml:id { xsd:NCName })?,
-    attribute xml:base { xsd:anyURI | xsd:string }?,
-    attribute xml:lang { xsd:language? }?,
-    attribute class { xsd:NMTOKENS }?,
-    attribute role { xsd:string }?,
-    attribute rel { xsd:string }?,
-    attribute rev { xsd:string }?,
-    attribute typeof { xsd:string }?,
-    attribute content { xsd:string }?,
-    attribute datatype { xsd:string }?,
-    attribute resource { xsd:string }?,
-    attribute about { xsd:string }?,
-    attribute property { xsd:string }?,
-    attribute xml:space { "default" | "preserve" }?,
-    attribute offset { xsd:string }?,
-    (desc
-     | svgTitle)*
   }
 tspan =
   element tspan {
@@ -2282,7 +1973,8 @@ tspan =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -2316,11 +2008,6 @@ tspan =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute x { xsd:string }?,  # For SVG-1.2-RFC
     attribute y { xsd:string }?,
     (tbreak
@@ -2366,7 +2053,8 @@ tspan_2 =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -2400,11 +2088,6 @@ tspan_2 =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     attribute x { xsd:string }?,  # For SVG-1.2-RFC
     attribute y { xsd:string }?,
     (desc
@@ -2430,11 +2113,6 @@ a_2 =
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
     attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?,
     ((attribute fill-opacity { "inherit" | xsd:string }?,
       attribute stroke-opacity { "inherit" | xsd:string }?)
      & (attribute fill { "none" | rfc-color }?,
@@ -2469,7 +2147,8 @@ a_2 =
         attribute line-increment { "auto" | "inherit" | xsd:string }?)
      & (attribute stop-color { rfc-color }?,
         attribute stop-opacity { "inherit" | xsd:string }?)
-     & (attribute font-family { "inherit" | xsd:string }?,
+     & (attribute font-family { "serif" | "sans-serif" | "monospace"
+         | "inherit" }?,
         attribute font-size { "inherit" | xsd:string }?,
         attribute font-style {
           "normal" | "italic" | "oblique" | "inherit"
@@ -2489,13 +2168,13 @@ a_2 =
           "start" | "center" | "end" | "inherit"
         }?)),
     attribute transform { xsd:string | "none" }?,
-    attribute ns1:show { "new" | "replace" }?,
-    attribute ns1:actuate { "onRequest" }?,
-    attribute ns1:type { "simple" }?,
-    attribute ns1:role { xsd:anyURI | xsd:string }?,
-    attribute ns1:arcrole { xsd:anyURI | xsd:string }?,
-    attribute ns1:title { text }?,
-    attribute ns1:href { xsd:anyURI | xsd:string }?,
+    attribute xlink:show { "new" | "replace" }?,
+    attribute xlink:actuate { "onRequest" }?,
+    attribute xlink:type { "simple" }?,
+    attribute xlink:role { xsd:anyURI | xsd:string }?,
+    attribute xlink:arcrole { xsd:anyURI | xsd:string }?,
+    attribute xlink:title { text }?,
+    attribute xlink:href { xsd:anyURI | xsd:string }?,
     attribute target {
       "_replace" | "_self" | "_parent" | "_top" | "_blank" | xsd:Name
     }?,
@@ -2520,16 +2199,10 @@ tbreak =
     attribute resource { xsd:string }?,
     attribute about { xsd:string }?,
     attribute property { xsd:string }?,
-    attribute xml:space { "default" | "preserve" }?,
-    attribute requiredFeatures { xsd:string }?,
-    attribute requiredExtensions { xsd:string }?,
-    attribute requiredFormats { xsd:string }?,
-    attribute requiredFonts { xsd:string }?,
-    attribute systemLanguage { xsd:string }?
+    attribute xml:space { "default" | "preserve" }?
   }
 
-#---  End of SVG 1.2 RFC RNC schema
-
+#---  End of SVG 1.2 RFC rnc schema
 ]]></artwork></figure>
 
 </section>
