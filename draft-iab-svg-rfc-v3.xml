@@ -1,0 +1,534 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc SYSTEM "rfc2629-xhtml.ent" [
+<!ENTITY rfc2119 SYSTEM "reference.RFC.2119.xml">
+]>
+
+<rfc category="info" ipr="trust200902" submissionType="IAB" symRefs="true" sortRefs="false" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <front>
+    <title>SVG Drawings for RFCs: SVG 1.2 RFC</title>
+    <seriesInfo name="RFC" value="7996"/>
+    <author initials="N." surname="Brownlee" fullname="Nevil Brownlee">
+      <organization>The University of Auckland</organization>
+      <address>
+        <email>n.brownlee@auckland.ac.nz</email>
+      </address>
+    </author>
+    <date />
+    <abstract>
+      <t>This document specifies SVG 1.2 RFC -- an SVG profile for use in
+      diagrams that may appear in RFCs -- and considers some of the issues
+      concerning the creation and use of such diagrams.
+    </t>
+    </abstract>
+  </front>
+  <middle>
+    <section>
+      <name>Introduction</name>
+      <t>
+      Over the last few years, the RFC Editor has worked with the
+      Internet community to develop specifications for changes in
+      the format of RFCs.  An outline of the resulting
+      specifications was published as <xref target="RFC6949"/> in May 2013.
+      Since then, a Design Team has been working with the RFC Editor
+      to flesh out those specifications.
+      One aspect of the changes is to allow line drawings in RFCs;
+      <xref target="RFC6949"/> says
+
+        </t>
+      <ul empty="true" spacing="normal">
+        <li>
+        Graphics may include ASCII art and a more complex form to be
+        defined, such as SVG line art [SVG].
+        Color and grayscale will
+        not be accepted.  RFCs must correctly display in monochromatic
+        black-and-white to allow for monochrome displays,
+        black-and-white printing, and support for visual disabilities.
+    </li>
+      </ul>
+      <t>
+      SVG (Scalable Vector Graphics) has been developed by W3C, the
+      World Wide Web Consortium; its current standard is SVG 1.1 Full
+      <xref target="W3C.REC-SVG11-20110816"/>.
+      This document defines SVG 1.2 RFC, an SVG profile (i.e., a subset
+      of SVG) that is suitable for RFC line drawings.
+    </t>
+      <t>
+      Note that in RFCs, the text provides normative
+      descriptions of protocols, systems, etc.  Diagrams may be
+      used to help explain concepts more clearly, but
+      they provide supporting details and should not be considered
+      to be complete specifications in themselves.
+    </t>
+      <t>  
+      The details (particularly any vocabularies) described in this
+      document are expected to change based on experience gained in
+      implementing the new publication toolsets. Revised
+      documents will be published capturing those changes as the
+      toolsets are completed. Other implementers must not expect those
+      changes to remain backwards-compatible with the details
+      described in this document.
+    </t>
+    </section>
+    <section>
+      <name>SVG 1.2 RFC: An SVG Profile for RFCs</name>
+      <t>
+      As a starting point for SVG 1.2 RFC, the Design Team decided to
+      use SVG Tiny 1.2 (also referred to as "SVG 1.2 Tiny")
+      <xref target="W3C.REC-SVGTiny12-20081222"/>.  SVG 1.2 Tiny is an
+      SVG subset intended to be implemented on small, mobile devices
+      such as cell phones and smartphones.  That should allow RFCs to
+      be rendered well on such devices, especially those that have
+      small screens.  However, RFCs are self-contained documents that
+      do not change once they are published.  The use of SVG drawings
+      in RFCs is intended to allow authors to create drawings that are
+      simple to produce and are easier to understand than our
+      traditional "ASCII art" ones.  In short, we are also trying to
+      improve access to the content in RFCs, so SVG drawings need to be
+      kept as simple as possible.
+    </t>
+      <t>
+      Appendix A (below) provides a complete RELAX NG Compact (RNC) schema
+      <xref target="RNG-HOME"/> for SVG 1.2 RFC.  It is derived from
+      the SVG 1.2 Tiny schema, and is the formal definition of SVG 1.2 RFC.
+      The remainder of this section gives a simplified -- i.e., easier to
+      read and understand -- overview of SVG 1.2 RFC.
+    </t>
+      <t>
+      SVG can provide a complete User Interface, but within RFCs, all
+      we need are simple diagrams that do not change once the RFC is
+      published.  Therefore, SVG 1.2 RFC does not allow anything from the
+      following sections in SVG Tiny 1.2
+       
+      <xref target="W3C.REC-SVGTiny12-20081222"/>:
+
+</t>
+      <dl newline="false" spacing="compact">
+        <dt>12  Multimedia</dt>
+        <dd/>
+        <dt>13  Interactivity</dt>
+        <dd/>
+        <dt>15  Scripting</dt>
+        <dd/>
+        <dt>16  Animation</dt>
+        <dd/>
+        <dt>18  Metadata</dt>
+        <dd/>
+        <dt>19  Extensibility</dt>
+        <dd/>
+      </dl>
+      <t>
+      Note that SVG Tiny 1.2 elements may have many properties or
+      attributes that are needed to support aspects of the above sections.
+      Those are not allowed in SVG 1.2 RFC.
+    </t>
+      <t>
+    We now consider these other sections in SVG Tiny 1.2
+      <xref target="W3C.REC-SVGTiny12-20081222"/>:
+      </t>
+      <dl newline="true" spacing="compact" indent="5">
+        <dt> 9 Basic Shapes</dt>
+        <dd/>
+        <dt>10 Text</dt>
+        <dd>
+          Everything in this section is allowed in SVG 1.2 RFC.</dd>
+        <dt>11 Painting: Filling, Stroking, Colors and Paint Servers</dt>
+        <dd>
+          <t>
+          Anything relating to 'color' is not allowed in SVG 1.2 RFC;
+          everything else is allowed.  This is a requirement documented
+          in <xref target="RFC6949"/>.
+        </t>
+        </dd>
+        <dt>14 Linking</dt>
+        <dd>
+          SVG Tiny 1.2 allows Internationalized Resource Identifiers (IRIs)
+          in references.  In SVG 1.2 RFC, such links must be ASCII only.
+          That should not cause problems, since one can just use the URI form
+          of any IRI.  Authors should try to use links only to URIs
+          that are long-term stable.
+        </dd>
+        <dt>17 Fonts</dt>
+        <dd>
+         SVG 1.2 RFC only allows 'serif', 'sans-serif', and 'monospace'
+         generic font families from the WebFonts facility, described
+         in Section 15 ("Fonts") of the W3C
+         Cascading Style Sheets (CSS) 2.1 document
+         <xref target="W3C.REC-CSS2-20110607"/>. In particular, the
+         SVG 'font' element is not allowed.
+        </dd>
+      </dl>
+      <section>
+        <name>Elements, Properties, and Attributes Allowed in SVG 1.2 RFC</name>
+        <t>This section discusses elements, properties, and attributes
+     selected for SVG 1.2 RFC from <xref target="W3C.REC-SVGTiny12-20081222"/>.
+</t>
+        <artwork name="" type="" align="left" alt=""><![CDATA[
+ In the list below, elements and properties are listed on the
+ left, and their allowed values are given in parentheses on the
+ right.
+ 
+ [color] is the list of allowed colors, a black-and-white
+         subset of the SVG color names.
+ 
+ [style] is a set of CSS attributes that are commonly used (by SVG
+         drawing applications).  They are not part of SVG Tiny 1.2
+         but are included here for compatibility.  Note that
+
+         - There is no guarantee that any renderer will implement
+           all the CSS attributes a drawing application may use.
+
+         - Authors will need to consider the compatibility of their
+           drawings with rendering devices.
+
+ Elements:
+
+   svg              (version=1.2, baseProfile=tiny, width, viewBox,
+                     preserveAspectRatio, snapshotTime, height,
+                     id, role)
+   g                (label, class, id, role, fill, [style], transform)
+   defs             (id, role, fill)
+   title            (id, role)
+   desc             (id, role)
+   a                (id, role, fill, transform)
+   use              (x, y, href, xlink:href, id, role,
+                     fill, transform)
+
+   rect             (x, y, width, height, rx, ry, stroke-miterlimit,
+                     id, role, fill, [style], transform)
+   circle           (cx, cy, r, id, role, fill, [style], transform)
+   ellipse          (cx, cy, rx, ry, id, role,
+                     fill, [style], transform)
+   line             (x1, y1, x2, y2, id, role, fill, transform)
+   polyline         (points, id, role, fill, transform)
+   polygon          (points, id, role, fill, [style], transform)
+   text             (x, y, rotate, space, id, role, fill, [style],
+                     transform)
+   tspan            (x, y, id, role, fill)
+   textArea         (x, y, width, height, auto, id, role, fill,
+                     transform)
+   tbreak           (id, role)
+
+   solidColor       (id, role, fill)
+   path             (d, pathLength, stroke-miterlimit,
+                     id, role, fill, [style], transform)
+  
+ Properties: (most allow "inherit" as a value)
+
+   [style]          (font-family, font-weight, font-style,
+                     font-variant, direction, unicode-bidi,
+                     text-anchor, fill, fill-rule)
+   
+   [color]          (black, white, #000000, #ffffff, #FFFFFF)
+
+   stroke           ([color], none, currentColor)
+   stroke-width 
+   stroke-linecap   (butt, round, square)
+   stroke-linejoin  (miter, round, bevel)
+   stroke-miterlimit
+   stroke-dasharray
+   stroke-dashoffset
+   stroke-opacity
+   vector-effect    (non-scaling-stroke, none)
+   viewport-fill    (none, currentColor)
+   viewport-fill-opacity
+
+   display          (inline, block, list-item, run-in, compact,
+                     marker, table, inline-table, table-row-group,
+                     table-header-group, table-footer-group,
+                     table-row, table-column-group,
+                     table-column, table-cell, table-caption,
+                     none)
+   visibility       (visible, hidden, collapse)
+   color-rendering  (auto, optimizeSpeed, optimizeQuality)
+   shape-rendering  (auto, optimizeSpeed, crispEdges,
+                     geometricPrecision)
+   text-rendering   (auto, optimizeSpeed, optimizeLegibility,
+                     geometricPrecision)
+   buffered-rendering  (auto, dynamic, static)
+
+   opacity
+   solid-opacity
+   solid-color    (currentColor, [color])
+   color          (currentColor, [color])
+   stop-color     (currentColor, [color])
+   stop-opacity
+
+   line-increment (auto)
+   text-align     (start, end, center)
+   display-align  (auto, before, center, after)
+
+   font-size
+   font-family    (serif, sans-serif, monospace)
+   font-weight    (normal, bold, bolder, lighter)
+   font-style     (normal, italic, oblique)
+   font-variant   (normal, small-caps)
+   direction      (ltr, rtl)
+   unicode-bidi   (normal, embed, bidi-override)
+   text-anchor    (start, middle, end)
+   fill           (none, [color])
+   fill-rule      (nonzero, evenodd)
+   fill-opacity
+]]></artwork>
+      </section>
+    </section>
+    <section>
+      <name>How to Create SVG Drawings</name>
+      <t>Many drawing packages can be used to create SVG drawings --
+      for example, Open Source packages Inkscape and Dia.
+      Be aware that such packages may use SVG elements or attributes
+      that are not allowed in SVG 1.2 RFC. 
+      </t>
+      <ul spacing="normal">
+        <li>For example, the 'marker' attribute is often used to place
+        symbols such as arrowheads on lines, but 'marker' is not allowed
+        in SVG 1.2 Tiny or SVG 1.2 RFC.  In such cases, one has to draw
+        the arrowhead in another, simpler way.</li>
+        <li>SVG clip paths are used to define a shape; objects outside
+        that shape become invisible.  The 'clipPath' element is not
+        allowed in SVG 1.2 Tiny or SVG 1.2 RFC.</li>
+      </ul>
+      <t>
+      Diagrams produced with these packages may contain elements,
+      their attributes or properties, or values of attributes or
+      properties that are not allowed in SVG 1.2 RFC.
+      We will need to provide a tool to either (1) strip out anything
+      that is not allowed in SVG 1.2 RFC or (2) replace disallowed values
+      (e.g., replace 'Sans' with 'sans‑serif' as an allowed value
+      for 'font‑family').  Experience with a simple test version of a
+      tool for this has shown that such deletion and replacement can be
+      effective for making SVG files from drawing packages conform to
+      SVG 1.2 RFC, without visibly changing the diagrams they produce.
+    </t>
+      <t>
+      The tool described above can also be used by authors simply
+      to check that their diagrams conform to SVG 1.2 RFC.  To help
+      with this, if visible changes do occur, the tool should 
+      produce a list of non‑allowed keywords and the context in which
+      they were found.
+    </t>
+      <t>
+      To include a diagram in an RFC, the xml2rfc (v3) tool will
+      need to provide a way to include SVG drawings in Internet‑Drafts,
+      as described in Section 2.5 of <xref target="RFC7991"/>.
+    </t>
+    </section>
+    <section>
+      <name>Accessibility Considerations</name>
+      <t>One of the long-term goals for RFCs is to make them more
+      accessible, e.g., to sight-impaired readers.  For diagrams,
+      it would be useful for authors to provide alternative forms
+      of the diagram, so that voice-reading software could be used
+      to "talk through" the diagram.  Simply reading the SVG code
+      for a complex diagram seems unlikely to work.
+    </t>
+      <t>
+      SVG 1.2 RFC allows SVG's 'title' and 'desc' elements.
+      'title' provides a brief text caption for an SVG object
+      (much like a figure caption), and 'desc' provides a longer
+      text description of what the object actually represents.
+      As well, the SVG 'role' attribute can be used to indicate
+      to a browser how an SVG object is to be interpreted.
+      Good suggestions on how to use these elements are given in
+      <xref target="SVG-ACCESS-TIPS"/>.
+    </t>
+      <t>
+      ARIA is a W3C Recommendation for using SVG to create
+      (as the name "ARIA" indicates) "Accessible Rich Internet Applications".
+      A helpful introduction to ARIA is provided by
+      <xref target="SVG-ARIA-PRIMER"/>, while <xref target="SVG-USING-ARIA"/>
+      gives examples of how to use ARIA to enhance SVG accessibility.
+    </t>
+    </section>
+    <section>
+      <name>Examples of Diagrams Common in RFCs</name>
+      <t>
+      Another way to create SVG drawings is to write programs to draw
+      them.  For example, using Python and its svgwrite module is
+      a pleasant environment (for those who like writing code);
+      this section presents a few examples of diagrams created in this
+      way. Note that they are merely examples of typical diagrams from
+      RFCs.
+    </t>
+      <t>The SVG diagrams for this section, along with an HTML version of
+    this document that includes the SVG diagrams, can be seen at
+      <xref target="NB-SVG-1.2-RFC"/>.
+    </t>
+      <section>
+        <name>Packet Layout Diagrams</name>
+        <t>Example: Figure 3 from <xref target="RFC0793"/>.</t>
+        <figure>
+          <name>TCP Header Format</name>
+          <artwork src="tcp-header.svg" type="svg">n
+            <xi:include href="tcp_header.txt" parse="text"/>
+          </artwork>
+        </figure>
+      </section>
+      <section>
+        <name>Sequence Diagrams (1)</name>
+        <t>Example: Figure 6 from <xref target="ExpTrustedProxy"/>.</t>
+        <figure>
+          <name>requesting an HTTP resource</name>
+          <artwork type="svg" src="proxy-dwg.svg">
+          </artwork>
+        </figure>
+      </section>
+      <section>
+        <name>Sequence Diagrams (2)</name>
+        <t>Example: Figure 3 from <xref target="RFC4321"/>.</t>
+        <figure>
+          <name>Late 408s to Non-INVITEs</name>
+          <artwork src="RFC4321-fig3.svg" type="svg">
+            <xi:include href="RFC4321-fig3.txt" parse="text"/>
+          </artwork>
+        </figure>
+      </section>
+    </section>
+    <section>
+      <name>Security Considerations</name>
+      <t>This document does not introduce any security considerations
+      on its own.</t>
+    </section>
+  </middle>
+  <back>
+    <references>
+      <name>References</name>
+      <references>
+        <name>Normative References</name>
+        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6949.xml"/>
+        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml4/reference.W3C.REC-SVGTiny12-20081222.xml"/>
+        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml4/reference.W3C.REC-CSS2-20110607.xml"/>
+      </references>
+      <references>
+        <name>Informative References</name>
+        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml4/reference.W3C.REC-SVG11-20110816.xml"/>
+        <reference anchor="SVG-ACCESS-TIPS" target="http://www.sitepoint.com/tips-accessible-svg">
+          <front>
+            <title>Tips for Creating Accessible SVG</title>
+            <author initials="L." surname="Watson" fullname="Leonie Watson"/>
+            <date month="May" day="6" year="2014"/>
+          </front>
+        </reference>
+        <reference anchor="SVG-ARIA-PRIMER" target="http://www.w3.org/TR/2010/WD-wai-aria-primer-20100916">
+          <front>
+            <title>WAI-ARIA 1.0 Primer</title>
+            <seriesInfo name="World Wide Web Consortium" value="Working Draft"/>
+            <author initials="L." surname="Pappas" fullname="Lisa Pappas"/>
+            <author initials="R." surname="Schwerdtfeger" fullname="Richard Schwerdtfeger"/>
+            <author initials="M." surname="Cooper" fullname="Michael Cooper"/>
+            <date month="September" day="16" year="2010"/>
+          </front>
+        </reference>
+        <reference anchor="SVG-USING-ARIA" target="https://www.paciellogroup.com/blog/2013/12/using-aria-enhance-svg-accessibility/">
+          <front>
+            <title>Using ARIA to enhance SVG accessibility</title>
+            <seriesInfo name="The Paciello" value="Group"/>
+            <author initials="L." surname="Watson" fullname="Leonie Watson"/>
+            <date month="December" day="19" year="2013"/>
+          </front>
+        </reference>
+        <!-- draft-iab-xml2rfc (RFC 7991) -->
+        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7991.xml"/>
+        <reference anchor="NB-SVG-1.2-RFC" target="https://www.rfc-editor.org/materials/format/svg/">
+          <front>
+            <title>Index of /~nevil/SVG_RFC_1.2
+        </title>
+            <author initials="N" surname="Brownlee" fullname="Nevil Brownlee">
+              <organization/>
+            </author>
+          </front>
+        </reference>
+        <!-- RFC 793 - to fix the leading-zero issue -->
+        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0793.xml"/>
+        <!-- draft-loreto-httpbis-trusted-proxy20 (Expired) -->
+        <reference anchor="ExpTrustedProxy">
+          <front>
+            <title>Explicit Trusted Proxy in HTTP/2.0</title>
+            <seriesInfo name="Work in Progress," value="draft-loreto-httpbis-trusted-proxy20-01"/>
+            <author initials="S" surname="Loreto" fullname="Salvatore Loreto">
+              <organization/>
+            </author>
+            <author initials="J" surname="Mattsson" fullname="John Mattsson">
+              <organization/>
+            </author>
+            <author initials="R" surname="Skog" fullname="Robert Skog">
+              <organization/>
+            </author>
+            <author initials="H" surname="Spaak" fullname="Hans Spaak">
+              <organization/>
+            </author>
+            <author initials="G" surname="Bourg" fullname="Gus Bourg">
+              <organization/>
+            </author>
+            <author initials="D" surname="Druta" fullname="Dan Druta">
+              <organization/>
+            </author>
+            <author initials="M" surname="Hafeez" fullname="Mohammad Hafeez">
+              <organization/>
+            </author>
+            <date month="February" day="14" year="2014"/>
+          </front>
+        </reference>
+        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4321.xml"/>
+        <reference anchor="RNG-HOME" target="http://www.relaxng.org/">
+          <front>
+            <title>RELAX NG home page</title>
+            <author initials="M." surname="Murata" fullname="MURATA Makoto"/>
+            <date month="February" year="2014"/>
+          </front>
+        </reference>
+      </references>
+    </references>
+    <section>
+      <name>RELAX NG Compact (RNC) Schema for SVG 1.2 RFC</name>
+      <t> The following RNC schema can be used to check whether
+  an SVG file conforms to SVG 1.2 RFC.  For example, if this schema
+  were contained in a file called SVG-1.2-RFC.rnc, the following command
+  will test whether SVG file diagram.svg is a conformant SVG 1.2 RFC
+  drawing.
+  </t>
+      <t>
+  jing -c SVG-1.2-RFC.rnc diagram.svg
+  </t>
+      <t>
+  The RNC schema included below is available on the RFC Editor website
+  &lt;https://www.rfc-editor.org/materials/format/SVG-1.2-RFC.rnc&gt;.
+  The website is considered definitive should there be any discrepancies.
+  </t>
+  <artwork name="" type="text" align="left" alt="" src="svg-02.rnc">
+  </artwork>
+    </section>
+    <section numbered="false">
+      <name>IAB Members at the Time of Approval</name>
+      <t>
+     The IAB members at the time this memo was approved
+     were (in alphabetical order):
+
+ 
+ 
+   </t>
+      <ul empty="true" spacing="compact">
+        <li>Jari Arkko</li>
+        <li>Ralph Droms</li>
+        <li>Ted Hardie</li>
+        <li>Joe Hildebrand</li>
+        <li>Russ Housley</li>
+        <li>Lee Howard</li>
+        <li>Erik Nordmark</li>
+        <li>Robert Sparks</li>
+        <li>Andrew Sullivan</li>
+        <li>Dave Thaler</li>
+        <li>Martin Thomson</li>
+        <li>Brian Trammell</li>
+        <li>Suzanne Woolf</li>
+      </ul>
+    </section>
+    <section numbered="false">
+      <name>Acknowledgements</name>
+      <t>
+     Thanks to the RSE and the Design Team members for their helpful comments
+     and suggestions for SVG 1.2 RFC.  Thanks also to the wider IETF community
+     for their input.
+    </t>
+    </section>
+  </back>
+</rfc>
